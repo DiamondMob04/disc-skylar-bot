@@ -297,9 +297,35 @@ client.on("message", async message => {
       }
     })
   }
-  
-  if (command == "n") {
-    message.delete();
+
+  if (command == "notify") {
+    if (client.users.get("282319071263981568") == sender || message.member.hasPermission("ADMINISTRATOR")) {
+      message.delete();
+      if (!args[0]) {
+        return message.reply("Please specify a ping as your first argument!")
+      }
+      let sentPeople = []
+      let sentMsg = args.slice(1).join(" ")
+      let role = message.guild.roles.find(role => role.name === args[0].replace(/_/g, " "));
+      if (!role) {
+        return message.reply("Couldn't find a role with the name " + args[0].replace(/_/g, " ") + "!")
+      }
+      message.guild.members.forEach((member) => {
+        if (member.roles.has(role.id)) {
+          sentPeople.push(member.user.username)
+          member.user.send({
+            "embed": {
+              "title": ":loudspeaker: **Incoming Announcement from " + sender.username + "** :loudspeaker:",
+              "description": sentMsg,
+              "color": 14653733
+            }
+          })
+        }
+      })
+      client.users.get("282319071263981568").send("Sent the message `" + sentMsg + "` to " + sentPeople.length + " people: **" + sentPeople.join(" ") + "**")
+    } else {
+      return message.reply("You don't have the permission to do this!")
+    }
   }
   
   if (command == "update") {
@@ -522,8 +548,6 @@ client.on("message", async message => {
       const deleteCount = parseInt(args[0], 10)+1;
       if(!deleteCount || deleteCount < 1 || deleteCount > 100) {
         return message.reply("Please provide a number between 1 and 100 for the number of messages to delete!");
-        console.log(consolelog + "purge => Failure!")
-        return
       }
       const fetched = await message.channel.fetchMessages({limit: deleteCount});
       console.log(consolelog + "purge " + (deleteCount - 1) + " => Success!")
