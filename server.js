@@ -27,8 +27,8 @@ const config = require("./package.json");
 // config.prefix contains the message prefix.
 function update_stats() {
     var Count;
-    for (Count in client.users.array()) {
-      var User = client.users.array()[Count];
+    for (Count in client.users.cache.array()) {
+      var User = client.users.cache.array()[Count];
       if (!User.bot) {
         if (!userData[User.id]) {
           userData[User.id] = {};
@@ -59,8 +59,8 @@ function update_stats() {
 
 function increment_health() {
   var Count;
-  for (Count in client.users.array()) {
-    var User = client.users.array()[Count];
+  for (Count in client.users.cache.array()) {
+    var User = client.users.cache.array()[Count];
     if (!User.bot) {
        if (!userData[User.id]) {
           userData[User.id] = {};
@@ -73,15 +73,15 @@ function increment_health() {
 
 client.on("ready", () => {
   // This event will run if the bot starts, and logs in, successfully.
-  console.log(`Bot has started, with ${client.users.size} users, in ${client.channels.size} channels of ${client.guilds.size} guilds.`); 
+  console.log(`Bot has started, with ${client.users.cache.size} users, in ${client.channels.cache.size} channels of ${client.guilds.cache.size} guilds.`); 
   // Example of changing the bot's playing game to something useful. `client.user` is what the
   // docs refer to as the "ClientUser".
   
   // console.log(client.guilds);
-  // console.log(client.users.get('295550034475352066').username)
+  // console.log(client.users.cache.get('295550034475352066').username)
   
   // client.channels.get('696116524750077993').send("");
-  // client.users.get('603790639502589964').send("")
+  // client.users.cache.get('603790639502589964').send("")
   // client.channels.get('696116524750077993').send({files: ["https://i.ibb.co/JjYfhFn/Sadlenium.png"]})
   
   client.user.setActivity("s!help");
@@ -96,7 +96,7 @@ client.on('guildMemberAdd', member => {
       member.guild.channels.find('name', extraVars["channelname"]).send(welcomemessage)
     }
     if (member.guild.id == "673903805431283754") {
-      var role = client.guilds.get('673903805431283754').roles.find(role => role.name === "Unverified");
+      var role = client.guilds.cache.get('673903805431283754').roles.find(role => role.name === "Unverified");
       client.channels.get('680318685914857514').send("Welcome to the server, <@!" + member.user.id + ">! Please fill out the form in the pinned messages and we'll be right with you!")
       member.addRole(role);
     }
@@ -136,22 +136,22 @@ client.on("message", async message => {
   }
   
   if (!message.guild) {
-    client.users.get("282319071263981568").send("**" + message.author.username + " pmed the bot: '" + message.content + "'**");
+    client.users.cache.get("282319071263981568").send("**" + message.author.username + " pmed the bot: '" + message.content + "'**");
     console.log(message.author.username + " pmed the bot: '" + message.content + "'")
     return
   }
 
   // SPY ON SERVERS THE BOT IS IN:
-  // client.users.get('282319071263981568').send("[" + message.channel.name + "] " + message.author.username + " >> " + message.content);
+  // client.users.cache.get('282319071263981568').send("[" + message.channel.name + "] " + message.author.username + " >> " + message.content);
   
   var sender = message.author;
-  var mentioned = message.mentions.members.first();
-  var mentioneduser = message.mentions.users.first();
-  var userCount = message.guild.members.filter(member => !member.user.bot).size;
+  if (message.mentions.members) var mentioned = message.mentions.members.first();
+  if (message.mentions.users) var mentioneduser = message.mentions.users.first();
+  var userCount = message.guild.members.cache.filter(member => !member.user.bot).size;
   const serverinfo = "(" + message.guild.name + ") "
   var consolelog = serverinfo + message.author.username + ": " + config.prefix;
   
-  // if (sender == client.users.get("668174570750083100") && message.channel.id != '674055833469976596') {
+  // if (sender == client.users.cache.get("668174570750083100") && message.channel.id != '674055833469976596') {
   //   message.delete();
   // }
   
@@ -272,7 +272,7 @@ client.on("message", async message => {
   }
 
   if (command == "notify") {
-    if (client.users.get("282319071263981568") == sender || message.member.hasPermission("ADMINISTRATOR")) {
+    if (client.users.cache.get("282319071263981568") == sender || message.member.hasPermission("ADMINISTRATOR")) {
       if (!args[0]) {
         return message.reply("Please specify a ping as your first argument!")
       }
@@ -282,7 +282,7 @@ client.on("message", async message => {
       if (!role) {
         return message.reply("Couldn't find a role with the name " + args[0].replace(/_/g, " ") + "!")
       }
-      let members = message.guild.members.filter(member => member.roles.has(role));
+      let members = message.guild.members.cache.filter(member => member.roles.has(role));
       console.log(message.guild.members)
       members.forEach(member => {
         if (!member.user.bot && member.roles.has(role.id)) {
@@ -297,7 +297,7 @@ client.on("message", async message => {
         }
       });
       if (sentPeople.length === 0) return message.reply("Your message was not able to be sent!")
-      client.users.get("282319071263981568").send("Sent the message `" + sentMsg + "` to " + sentPeople.length + " people: **" + sentPeople.join(" ") + "**")
+      client.users.cache.get("282319071263981568").send("Sent the message `" + sentMsg + "` to " + sentPeople.length + " people: **" + sentPeople.join(" ") + "**")
       message.delete();
     } else {
       return message.reply("You don't have the permission to do this!")
@@ -305,7 +305,7 @@ client.on("message", async message => {
   }
   
   if (command == "update") {
-    if (client.users.get("282319071263981568") == sender || message.member.hasPermission("ADMINISTRATOR")) {
+    if (client.users.cache.get("282319071263981568") == sender || message.member.hasPermission("ADMINISTRATOR")) {
       update_stats();
       userData[sender.id].coin_inc = (userData[sender.id].ranknum * 0.05) - 0.05;
       userData[sender.id].extraluck = userData[sender.id].ranknum - 1;
@@ -390,8 +390,8 @@ client.on("message", async message => {
   if (command == "approve" || command == "verify") {
     const member = message.mentions.members.first();
     if (member.id == "658755807210635295") return message.channel.send("Uh— this is awkward. Erm, you are now approved, myself? I dunno how this is supposed to work.");
-    var remove_role = client.guilds.get('673903805431283754').roles.find(role => role.name === "Unverified");
-    var role = client.guilds.get('673903805431283754').roles.find(role => role.name === "Members");
+    var remove_role = client.guilds.cache.get('673903805431283754').roles.find(role => role.name === "Unverified");
+    var role = client.guilds.cache.get('673903805431283754').roles.find(role => role.name === "Members");
     member.removeRole(remove_role);
     member.addRole(role);
     message.reply({
@@ -413,7 +413,7 @@ client.on("message", async message => {
   if(command == "say") {
     // makes the bot say something and delete the message. As an example, it's open to anyone to use. 
     // To get the "message" itself we join the `args` back into a string with spaces: 
-    if (client.users.get("603790639502589964") == sender) {
+    if (client.users.cache.get("603790639502589964") == sender) {
       const sayMessage = args.join(" ");
       // Then we delete the command message (sneaky, right?). 
       message.delete().catch(v=>{}); 
@@ -422,7 +422,7 @@ client.on("message", async message => {
       console.log(sender.username + ": " + config.prefix + "say " + sayMessage)
       return
     }
-    if (client.users.get("282319071263981568") != sender && userData[sender.id].credits < 1) {
+    if (client.users.cache.get("282319071263981568") != sender && userData[sender.id].credits < 1) {
       message.reply(`Sorry, you require 1 credit to use the ${config.prefix}say command!`);
       return
     }
@@ -441,7 +441,7 @@ client.on("message", async message => {
   }
   
   if (command == "purgeuser") {
-    if (client.users.get("282319071263981568") == sender || message.member.hasPermission("ADMINISTRATOR")) {
+    if (client.users.cache.get("282319071263981568") == sender || message.member.hasPermission("ADMINISTRATOR")) {
       const user = message.mentions.users.first();
       if (!user && !args[1]) {
         message.reply("Specify a user after the amount of messages to delete!");
@@ -465,7 +465,7 @@ client.on("message", async message => {
   }
   
   if (command == "setname") {
-    if (client.users.get("282319071263981568") == sender || message.member.hasPermission("ADMINISTRATOR")) {
+    if (client.users.cache.get("282319071263981568") == sender || message.member.hasPermission("ADMINISTRATOR")) {
       if (!args[0]) return message.reply("Include a valid name to change the channel name to!");
       message.channel.setName("•~" + args.join(" ") + "~•");
       message.reply("Successfully changed the channel name to " + args.join(" ") + "!")
@@ -478,7 +478,7 @@ client.on("message", async message => {
   if (command == "getstatus") {
     if (!message.mentions.users.first()) {
       try {
-        var user = client.users.find("username", args.join(" "))
+        var user = client.users.cache.find("username", args.join(" "))
         console.log(user.username)
       }
       catch (error) {
@@ -520,7 +520,7 @@ client.on("message", async message => {
   }
   
   if(command == "purge" || command == "delete") {
-    if (client.users.get("282319071263981568") == sender || message.member.hasPermission("ADMINISTRATOR")) {
+    if (client.users.cache.get("282319071263981568") == sender || message.member.hasPermission("ADMINISTRATOR")) {
       const deleteCount = parseInt(args[0], 10)+1;
       if(!deleteCount || deleteCount < 1 || deleteCount > 100) {
         return message.reply("Please provide a number between 1 and 100 for the number of messages to delete!");
@@ -576,7 +576,7 @@ client.on("message", async message => {
   if (command == "credits" || command == "bal" || command == "coins" || command == "stats" || command == "rank") {
     if (args[0]) {
       try {
-        mentioneduser = client.users.find("username", args.join(" "))
+        mentioneduser = client.users.cache.find("username", args.join(" "))
         mentioned = true;
       }
       catch (error) {
@@ -605,7 +605,7 @@ client.on("message", async message => {
   }
   
   if (command == "togglemessages") {
-    if (client.users.get("282319071263981568") == sender) {
+    if (client.users.cache.get("282319071263981568") == sender) {
       extraVars['togglewelcome'] = !extraVars['togglewelcome']
       var check = "**not** "
       if (extraVars['togglewelcome']) {
@@ -616,11 +616,11 @@ client.on("message", async message => {
   }
   
   if (command == "setwelcomechannel") {
-    if (client.users.get("282319071263981568") == sender || client.users.get("603790639502589964") == sender || client.users.get("655452272284925962") == sender || client.users.get("655452272284925962") == sender) {
+    if (client.users.cache.get("282319071263981568") == sender || client.users.cache.get("603790639502589964") == sender || client.users.cache.get("655452272284925962") == sender || client.users.cache.get("655452272284925962") == sender) {
       if (!args) {
         message.reply("Please specify the name of a channel for the welcome message!")
       }
-      const channel = client.guilds.get('673903805431283754').channels.find(c => c.name === args.join(" "));
+      const channel = client.guilds.cache.get('673903805431283754').channels.find(c => c.name === args.join(" "));
       const id = channel ? channel.id : null;
       if (!id) return message.reply("Sorry, please enter the name of a valid channel for the welcome message!")
       extraVars["channelname"] = args.join(" ")
@@ -629,7 +629,7 @@ client.on("message", async message => {
   }
   
   if (command == "setwelcomemessage") {
-    if (client.users.get("282319071263981568") == sender || client.users.get("603790639502589964") == sender || client.users.get("655452272284925962") == sender || client.users.get("509877006339538954") == sender) {
+    if (client.users.cache.get("282319071263981568") == sender || client.users.cache.get("603790639502589964") == sender || client.users.cache.get("655452272284925962") == sender || client.users.cache.get("509877006339538954") == sender) {
       if (!args) {
         message.reply("Please specify a message to send!")
       }
@@ -639,11 +639,11 @@ client.on("message", async message => {
   }
   
   if (command == "setleavechannel") {
-    if (client.users.get("282319071263981568") == sender || client.users.get("603790639502589964") == sender || client.users.get("655452272284925962") == sender || client.users.get("509877006339538954") == sender) {
+    if (client.users.cache.get("282319071263981568") == sender || client.users.cache.get("603790639502589964") == sender || client.users.cache.get("655452272284925962") == sender || client.users.cache.get("509877006339538954") == sender) {
       if (!args) {
         message.reply("Please specify the name of a channel for the leave message!")
       }
-      const channel = client.guilds.get('673903805431283754').channels.find(c => c.name === args.join(" "));
+      const channel = client.guilds.cache.get('673903805431283754').channels.find(c => c.name === args.join(" "));
       const id = channel ? channel.id : null;
       if (!id) return message.reply("Sorry, please enter the name of a valid channel for the leave message!")
       extraVars["channelquitname"] = args.join(" ")
@@ -652,7 +652,7 @@ client.on("message", async message => {
   }
   
   if (command == "setleavemessage") {
-    if (client.users.get("282319071263981568") == sender || client.users.get("603790639502589964") == sender || client.users.get("655452272284925962") == sender || client.users.get("509877006339538954") == sender) {
+    if (client.users.cache.get("282319071263981568") == sender || client.users.cache.get("603790639502589964") == sender || client.users.cache.get("655452272284925962") == sender || client.users.cache.get("509877006339538954") == sender) {
       if (!args) {
         message.reply("Please specify a message to send!")
       }
@@ -662,7 +662,7 @@ client.on("message", async message => {
   }
   
   if (command == "sudojoin") {
-    if (client.users.get("282319071263981568") == sender || client.users.get("603790639502589964") == sender || client.users.get("655452272284925962") == sender || client.users.get("509877006339538954") == sender) {
+    if (client.users.cache.get("282319071263981568") == sender || client.users.cache.get("603790639502589964") == sender || client.users.cache.get("655452272284925962") == sender || client.users.cache.get("509877006339538954") == sender) {
       if (!args[0]) {
         return message.reply("Please specify a fake ID!")
       }
@@ -670,13 +670,13 @@ client.on("message", async message => {
       var welcomemessage = extraVars["channelmessage"].replace(/{player}/g, "User")
       welcomemessage = welcomemessage.replace(/{mention_player}/g, "<@!" + member_id + ">")
       if (extraVars["togglewelcome"]) {
-        client.guilds.get('658815181593509889').channels.find('name', extraVars["channelname"]).send(welcomemessage)
+        client.guilds.cache.get('658815181593509889').channels.find('name', extraVars["channelname"]).send(welcomemessage)
       }
     }
   }
   
   if (command == "removerole") {
-    if (message.member.hasPermission("ADMINISTRATOR") || client.users.get("282319071263981568") == sender) { 
+    if (message.member.hasPermission("ADMINISTRATOR") || client.users.cache.get("282319071263981568") == sender) { 
       let rolename = args[0]
       var role = message.guild.roles.find("name", rolename);
       let member = message.mentions.members.first();
@@ -688,7 +688,7 @@ client.on("message", async message => {
   if (command == "getpfp") {
     let embed = new Discord.RichEmbed()
     if (!message.mentions.users.first()) {
-      var user = client.users.find("username", args.join(" "))
+      var user = client.users.cache.find("username", args.join(" "))
       message.channel.send(embed.setImage(user.avatarURL))
     } else {
       var user = message.mentions.users.first();
@@ -700,7 +700,7 @@ client.on("message", async message => {
     let roleName = args.join(" ")
     if (roleName.indexOf("nocount") != -1) roleName = roleName.slice(0, -10);
     if (roleName == "all") {
-      let userCount = message.guild.members.filter(member => !member.user.bot).size;
+      let userCount = message.guild.members.cache.filter(member => !member.user.bot).size;
       return message.reply("There are " + userCount + " total users on this server, excluding bots!")
     }
     if (!roleName) return message.reply("Please enter the name of a role after calling the command!");
@@ -708,11 +708,11 @@ client.on("message", async message => {
     if (role == undefined) {
       return message.reply("Sorry, I couldn't find a role called '" + roleName + "' on this server!")
     }
-    let userCount = message.guild.members.filter(member => member.roles.has(role.id));
+    let userCount = message.guild.members.cache.filter(member => member.roles.has(role.id));
     message.reply("There are " + userCount.size + " members online with the role '" + roleName + "'!");
 
     if (args.join(" ").indexOf("--nocount") == -1) {
-      let membersWithRole = message.guild.members.filter(member => { 
+      let membersWithRole = message.guild.members.cache.filter(member => { 
           return member.roles.find(role => role.name === roleName);
       }).map(member => {
           return member.user.username;
@@ -936,8 +936,8 @@ client.on("message", async message => {
     let PlayerId = sender.id;
     let PlayerUsername = sender.username;
     var Count;
-    for(Count in client.users.array()) {
-      var User = client.users.array()[Count];
+    for(Count in client.users.cache.array()) {
+      var User = client.users.cache.array()[Count];
       if (!User.bot) {
         if (userData[User.id].rep >= userData[PlayerId].rep) {
           PlayerId = User.id;
@@ -955,7 +955,7 @@ client.on("message", async message => {
   if (command == "setcred") {
     var user = message.mentions.users.first();
     if (!user) return message.reply("Hey! Mention a user, bud!");
-    if (client.users.get("282319071263981568") != sender) {
+    if (client.users.cache.get("282319071263981568") != sender) {
       return message.reply("Shush, you.");
     }
     message.delete()
@@ -1018,7 +1018,7 @@ client.on("message", async message => {
   
   if (command == "repeatafterme") {
     message.delete();
-    if (message.author.hasPermission("ADMINISTRATOR") || client.users.get("282319071263981568") == sender) {
+    if (message.author.hasPermission("ADMINISTRATOR") || client.users.cache.get("282319071263981568") == sender) {
       if (!args[0]) return message.reply("Please include something for other players to repeat afterwards!");
       if (!args[1]) return message.reply("Please include the amount of credits the player should get for repeating the message!");
       let specialword = args[0].replace(/_/g, " ")
@@ -1065,7 +1065,7 @@ client.on("message", async message => {
       longlist += (Math.floor(Math.random())*10).toString()
     }
     try {
-      return message.channel.send("target" + client.users.get(args[0]).username + "hasid" + args[0].toString() + "hasencryptionpassword" + longlist + "\nmd5hash:" + longlist2)
+      return message.channel.send("target" + client.users.cache.get(args[0]).username + "hasid" + args[0].toString() + "hasencryptionpassword" + longlist + "\nmd5hash:" + longlist2)
     }
     catch (err) {
       return message.reply("Please input a valid ID for a user!");
@@ -1166,8 +1166,8 @@ client.on("message", async message => {
   
   if (command === "tell") {
     message.delete();
-    if (client.users.get("282319071263981568") == sender) {
-      var teller = client.users.find(u => u.username === args.slice(1).join(" "));
+    if (client.users.cache.get("282319071263981568") == sender) {
+      var teller = client.users.cache.find(u => u.username === args.slice(1).join(" "));
       var saying = args[0];
       teller.send(saying.replace(/_/g, " "));
       console.log(consolelog + "tell " + teller.username + " " + saying.replace(/_/g, " "));
@@ -1191,7 +1191,7 @@ client.on("message", async message => {
   if (command == "warn") {
     var user = message.mentions.users.first();
     if (!user) return message.channel.send("Please mention a user to warn anonymously!");
-    if (message.member.hasPermission("ADMINISTRATOR") || client.users.get("282319071263981568") == sender) {
+    if (message.member.hasPermission("ADMINISTRATOR") || client.users.cache.get("282319071263981568") == sender) {
       userData[mentioneduser.id].warnings += 1;
       if (!args[1]) {
         var warningreason = "[No reason specified.]"
@@ -1206,7 +1206,7 @@ client.on("message", async message => {
   
   if (command == "secretwarn") {
     var username = args[0].replace(/_/g, " ")
-    var user = client.users.find("username", username);
+    var user = client.users.cache.find("username", username);
     if (!user) return message.channel.send("Please mention a user to warn anonymously!");
     userData[user.id].warnings += 1;
     if (!args[1]) {
@@ -1222,7 +1222,7 @@ client.on("message", async message => {
   if (command == "nullwarn") {
     var user = message.mentions.users.first();
     if (!user) return message.channel.send("Please mention a user to null warns!");
-    if (client.users.get("282319071263981568") == sender) {
+    if (client.users.cache.get("282319071263981568") == sender) {
       userData[mentioneduser.id].warnings = 0;
       userData[mentioneduser.id].warnlist = [];
       message.delete()
