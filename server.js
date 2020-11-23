@@ -1016,7 +1016,7 @@ client.on("message", async message => {
   
   if (command == "repeatafterme") {
     message.delete();
-    if (message.author.hasPermission("ADMINISTRATOR") || client.users.cache.get("282319071263981568") == sender) {
+    if (message.member.hasPermission("ADMINISTRATOR") || client.users.cache.get("282319071263981568") == sender) {
       if (!args[0]) return message.reply("Please include something for other players to repeat afterwards!");
       if (!args[1]) return message.reply("Please include the amount of credits the player should get for repeating the message!");
       let specialword = args[0].replace(/_/g, " ")
