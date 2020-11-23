@@ -2,6 +2,8 @@
 const Discord = require("discord.js");
 const fs = require('fs');
 const moment = require('moment');
+const cheerio = require("cheerio");
+const got = require("got");
 
 const client = new Discord.Client();
 var userData = JSON.parse(fs.readFileSync('userData.json'));
@@ -23,6 +25,7 @@ app.listen(process.env.PORT);
 
 // Here we load the config.json file that contains our token and our prefix values. 
 const config = require("./package.json");
+const { measureMemory } = require("vm");
 // config.token contains the bot's token
 // config.prefix contains the message prefix.
 function update_stats() {
@@ -303,6 +306,54 @@ client.on("message", async message => {
       return message.reply("You don't have the permission to do this!")
     }
   }
+
+  function shuffle(array) {
+    var currentIndex = array.length, temporaryValue, randomIndex;
+  
+    // While there remain elements to shuffle...
+    while (0 !== currentIndex) {
+  
+      // Pick a remaining element...
+      randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex -= 1;
+  
+      // And swap it with the current element.
+      temporaryValue = array[currentIndex];
+      array[currentIndex] = array[randomIndex];
+      array[randomIndex] = temporaryValue;
+    }
+  
+    return array;
+  }
+
+  if (command == "porn") {
+    if (sender.id == "255433022382407690" || sender.id == "282319071263981568") {
+      let tags = args
+      let count = 1
+      if (!isNaN(args[args.length-1])) {
+        count = parseInt(tags.pop())
+      }
+      tags = tags.join(" ").toLowerCase().trim()
+      got("https://e621.net/posts?tags=" + tags).then((response) => {
+        let $ = cheerio.load(response.body);
+        if ($(".has-cropped-true").length === 0) {
+          return message.reply("We couldn't find any results for those tags! Maybe try something else?")
+        }
+        let imagePool = $(".has-cropped-true")
+        shuffle(imagePool)
+        for (let i = 0; i < count; i++) {
+          if (imagePool.length === 0) return;
+          let targetImage = imagePool[i]
+          got("https://e621.net" + targetImage.parent.parent.attribs.href).then((response_two) => {
+            $ = cheerio.load(response_two.body);
+            message.channel.send($("#image")[0].attribs.src)
+          })
+        }
+      })
+    } else {
+      return
+    }
+  }
   
   if (command == "update") {
     if (client.users.cache.get("282319071263981568") == sender || message.member.hasPermission("ADMINISTRATOR")) {
@@ -449,7 +500,7 @@ client.on("message", async message => {
       if (!args[0]) message.reply("Specify a number of messages to delete as your first argument!");
       let amount = args[0]
       message.delete();
-      message.channel.fetchMessages({
+      message.channel.messages.fetch({
        limit: 100,
       }).then((messages) => {
        if (user) {
@@ -479,7 +530,6 @@ client.on("message", async message => {
     if (!message.mentions.users.first()) {
       try {
         var user = client.users.cache.find(u => u.username == args.join(" "))
-        console.log(user.username)
       }
       catch (error) {
         console.log(error)
