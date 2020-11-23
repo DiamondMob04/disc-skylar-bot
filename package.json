@@ -12,10 +12,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "discord.js": "^11.5.1",
+    "discord.js": "^11.6.4",
     "express": "^4.17.1",
     "fs": "0.0.1-security",
-    "moment": "^2.27.0"
+    "moment": "^2.29.1"
   },
   "devDependencies": {
     "env-cmd": "^10.1.0"

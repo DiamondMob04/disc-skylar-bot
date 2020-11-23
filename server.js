@@ -272,7 +272,7 @@ client.on("message", async message => {
   }
 
   if (command == "notify") {
-    if (client.users.get("282319071263981568") == sender || sender.hasPermission("ADMINISTRATOR")) {
+    if (client.users.get("282319071263981568") == sender || message.member.hasPermission("ADMINISTRATOR")) {
       if (!args[0]) {
         return message.reply("Please specify a ping as your first argument!")
       }
@@ -305,7 +305,7 @@ client.on("message", async message => {
   }
   
   if (command == "update") {
-    if (client.users.get("282319071263981568") == sender || sender.hasPermission("ADMINISTRATOR")) {
+    if (client.users.get("282319071263981568") == sender || message.member.hasPermission("ADMINISTRATOR")) {
       update_stats();
       userData[sender.id].coin_inc = (userData[sender.id].ranknum * 0.05) - 0.05;
       userData[sender.id].extraluck = userData[sender.id].ranknum - 1;
@@ -441,7 +441,7 @@ client.on("message", async message => {
   }
   
   if (command == "purgeuser") {
-    if (client.users.get("282319071263981568") == sender || sender.hasPermission("ADMINISTRATOR")) {
+    if (client.users.get("282319071263981568") == sender || message.member.hasPermission("ADMINISTRATOR")) {
       const user = message.mentions.users.first();
       if (!user && !args[1]) {
         message.reply("Specify a user after the amount of messages to delete!");
@@ -465,7 +465,7 @@ client.on("message", async message => {
   }
   
   if (command == "setname") {
-    if (client.users.get("282319071263981568") == sender || sender.hasPermission("ADMINISTRATOR")) {
+    if (client.users.get("282319071263981568") == sender || message.member.hasPermission("ADMINISTRATOR")) {
       if (!args[0]) return message.reply("Include a valid name to change the channel name to!");
       message.channel.setName("•~" + args.join(" ") + "~•");
       message.reply("Successfully changed the channel name to " + args.join(" ") + "!")
@@ -520,7 +520,7 @@ client.on("message", async message => {
   }
   
   if(command == "purge" || command == "delete") {
-    if (client.users.get("282319071263981568") == sender || sender.hasPermission("ADMINISTRATOR")) {
+    if (client.users.get("282319071263981568") == sender || message.member.hasPermission("ADMINISTRATOR")) {
       const deleteCount = parseInt(args[0], 10)+1;
       if(!deleteCount || deleteCount < 1 || deleteCount > 100) {
         return message.reply("Please provide a number between 1 and 100 for the number of messages to delete!");
@@ -676,7 +676,7 @@ client.on("message", async message => {
   }
   
   if (command == "removerole") {
-    if (sender.hasPermission("ADMINISTRATOR") || client.users.get("282319071263981568") == sender) { 
+    if (message.member.hasPermission("ADMINISTRATOR") || client.users.get("282319071263981568") == sender) { 
       let rolename = args[0]
       var role = message.guild.roles.find("name", rolename);
       let member = message.mentions.members.first();
@@ -1191,7 +1191,7 @@ client.on("message", async message => {
   if (command == "warn") {
     var user = message.mentions.users.first();
     if (!user) return message.channel.send("Please mention a user to warn anonymously!");
-    if (sender.hasPermission("ADMINISTRATOR") || client.users.get("282319071263981568") == sender) {
+    if (message.member.hasPermission("ADMINISTRATOR") || client.users.get("282319071263981568") == sender) {
       userData[mentioneduser.id].warnings += 1;
       if (!args[1]) {
         var warningreason = "[No reason specified.]"
