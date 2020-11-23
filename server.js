@@ -708,7 +708,7 @@ client.on("message", async message => {
     if (role == undefined) {
       return message.reply("Sorry, I couldn't find a role called '" + roleName + "' on this server!")
     }
-    let userCount = message.guild.members.cache.filter(member => member.roles.has(role.id));
+    let userCount = message.guild.members.cache.filter(member => member.roles.cache.has(role.id));
     message.reply("There are " + userCount.size + " members online with the role '" + roleName + "'!");
 
     if (args.join(" ").indexOf("--nocount") == -1) {
@@ -718,12 +718,10 @@ client.on("message", async message => {
           return member.user.username;
       })
 
-      let embed = new Discord.RichEmbed({
-          "description": membersWithRole.join("\n"),
-          "color": 0xFFFF
-      });
-
-      message.channel.send({embed});
+      message.channel.send({embed: {
+        "description": membersWithRole.join("\n"),
+        "color": 0xFFFF
+      }});
     }
     return
   }
