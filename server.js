@@ -982,27 +982,27 @@ client.on("message", async message => {
             userData[sender.id].credits -= 1;
             console.log(consolelog + "roulette 1 => Lost!");
           } else {
-            message.channel.send("Hooray! " + sender + " won " + moneyatstake + " credit(s) from Roulette! :moneybag: Rolled: " + random + " Required: below " + winchance + " [+" + userData[sender.id].extraluck.toFixed(0) +"%].")
+            message.channel.send("Hooray! " + sender.username + " won " + moneyatstake + " credit(s) from Roulette! :moneybag: Rolled: " + random + " Required: below " + winchance + " [+" + userData[sender.id].extraluck.toFixed(0) +"%].")
             userData[sender.id].credits += moneyatstake;
             console.log(consolelog + "roulette 1 => Won!");
           }
         } else {
-          message.channel.send(sender + ", you don't have enough money to use this command!");
+          message.channel.send(sender.username + ", you don't have enough money to use this command!");
         }
       } else {
         if (parseInt(sayMessage) <= 0) {
-          message.channel.send(sender + ", you need to put a number greater than 0!");
+          message.channel.send(sender.username + ", you need to put a number greater than 0!");
         } else {
           let moneycanlose = Math.floor(Math.round(parseInt(sayMessage)));
           let moneyatstake = Math.floor(Math.round(parseInt(sayMessage) + (parseInt(sayMessage) * userData[sender.id].coin_inc)));
           if (userData[sender.id].credits >= sayMessage) {
             var random = Math.floor(Math.random()*100);
             if (random >= winchance) {
-              message.channel.send("Oh no! " + sender + " lost " + moneycanlose + " credit(s) from Roulette! :scream: Rolled: " + random + " Required: below " + winchance + " [+" + userData[sender.id].extraluck.toFixed(0) +"%].")
+              message.channel.send("Oh no! " + sender.username +  " lost " + moneycanlose + " credit(s) from Roulette! :scream: Rolled: " + random + " Required: below " + winchance + " [+" + userData[sender.id].extraluck.toFixed(0) +"%].")
               userData[sender.id].credits -= moneycanlose;
               console.log(consolelog + "roulette " + parseInt(sayMessage) + " => Lost!");
             } else {
-              message.channel.send("Hooray! " + sender + " won " + moneyatstake + " credit(s) [+" + (userData[sender.id].coin_inc * 100).toFixed(0) + "%] from Roulette! :moneybag: Rolled: " + random + " Required: below " + winchance + " [+" + userData[sender.id].extraluck.toFixed(0) +"%].")
+              message.channel.send("Hooray! " + sender.username +  " won " + moneyatstake + " credit(s) [+" + (userData[sender.id].coin_inc * 100).toFixed(0) + "%] from Roulette! :moneybag: Rolled: " + random + " Required: below " + winchance + " [+" + userData[sender.id].extraluck.toFixed(0) +"%].")
               userData[sender.id].credits += moneyatstake;
               console.log(consolelog + "roulette " + parseInt(sayMessage) + " => Won!");
             }
