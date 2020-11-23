@@ -84,7 +84,7 @@ client.on("ready", () => {
   // client.users.cache.get('603790639502589964').send("")
   // client.channels.get('696116524750077993').send({files: ["https://i.ibb.co/JjYfhFn/Sadlenium.png"]})
   
-  client.user.setActivity("s!help");
+  client.user.setActivity("for s!help", {type: "LISTENING"});
   update_stats();
   setInterval(increment_health, 180000);
 });
@@ -578,7 +578,7 @@ client.on("message", async message => {
   if (command == "credits" || command == "bal" || command == "coins" || command == "stats" || command == "rank") {
     if (args[0]) {
       try {
-        mentioneduser = client.users.cache.find(u => u.username == args.join(" "))
+        mentioneduser = client.users.cache.find("username", args.join(" "))
         mentioned = true;
       }
       catch (error) {
@@ -680,7 +680,7 @@ client.on("message", async message => {
   if (command == "removerole") {
     if (message.member.hasPermission("ADMINISTRATOR") || client.users.cache.get("282319071263981568") == sender) { 
       let rolename = args[0]
-      var role = message.guild.roles.cache.find(r => r.name == rolename);
+      var role = message.guild.roles.cache.find("name", rolename);
       let member = message.mentions.members.first();
       member.removeRole(role).catch(console.error);
       message.reply("Successfully removed role " + args[0] + " from user " + member.user.username + "!")
@@ -690,7 +690,7 @@ client.on("message", async message => {
   if (command == "getpfp") {
     let embed = new Discord.RichEmbed()
     if (!message.mentions.users.first()) {
-      var user = client.users.cache.find(u => u.username == args.join(" "))
+      var user = client.users.cache.find("username", args.join(" "))
       message.channel.send(embed.setImage(user.avatarURL))
     } else {
       var user = message.mentions.users.first();
@@ -1206,7 +1206,7 @@ client.on("message", async message => {
   
   if (command == "secretwarn") {
     var username = args[0].replace(/_/g, " ")
-    var user = client.users.cache.find(u => u.username == username);
+    var user = client.users.cache.find("username", username);
     if (!user) return message.channel.send("Please mention a user to warn anonymously!");
     userData[user.id].warnings += 1;
     if (!args[1]) {
