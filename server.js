@@ -96,7 +96,7 @@ client.on('guildMemberAdd', member => {
       member.guild.channels.find('name', extraVars["channelname"]).send(welcomemessage)
     }
     if (member.guild.id == "673903805431283754") {
-      var role = client.guilds.cache.get('673903805431283754').roles.find(role => role.name === "Unverified");
+      var role = client.guilds.cache.get('673903805431283754').roles.cache.find(role => role.name === "Unverified");
       client.channels.get('680318685914857514').send("Welcome to the server, <@!" + member.user.id + ">! Please fill out the form in the pinned messages and we'll be right with you!")
       member.addRole(role);
     }
@@ -278,7 +278,7 @@ client.on("message", async message => {
       }
       var sentPeople = []
       var sentMsg = args.slice(1).join(" ")
-      var role = message.guild.roles.find(role => role.name == args[0].replace(/_/g, " "));
+      var role = message.guild.roles.cache.find(role => role.name == args[0].replace(/_/g, " "));
       if (!role) {
         return message.reply("Couldn't find a role with the name " + args[0].replace(/_/g, " ") + "!")
       }
@@ -390,8 +390,8 @@ client.on("message", async message => {
   if (command == "approve" || command == "verify") {
     const member = message.mentions.members.first();
     if (member.id == "658755807210635295") return message.channel.send("Uh— this is awkward. Erm, you are now approved, myself? I dunno how this is supposed to work.");
-    var remove_role = client.guilds.cache.get('673903805431283754').roles.find(role => role.name === "Unverified");
-    var role = client.guilds.cache.get('673903805431283754').roles.find(role => role.name === "Members");
+    var remove_role = client.guilds.cache.get('673903805431283754').roles.cache.find(role => role.name === "Unverified");
+    var role = client.guilds.cache.get('673903805431283754').roles.cache.find(role => role.name === "Members");
     member.removeRole(remove_role);
     member.addRole(role);
     message.reply({
@@ -678,7 +678,7 @@ client.on("message", async message => {
   if (command == "removerole") {
     if (message.member.hasPermission("ADMINISTRATOR") || client.users.cache.get("282319071263981568") == sender) { 
       let rolename = args[0]
-      var role = message.guild.roles.find("name", rolename);
+      var role = message.guild.roles.cache.find("name", rolename);
       let member = message.mentions.members.first();
       member.removeRole(role).catch(console.error);
       message.reply("Successfully removed role " + args[0] + " from user " + member.user.username + "!")
@@ -704,7 +704,7 @@ client.on("message", async message => {
       return message.reply("There are " + userCount + " total users on this server, excluding bots!")
     }
     if (!roleName) return message.reply("Please enter the name of a role after calling the command!");
-    let role = message.guild.roles.find(role => role.name === roleName);
+    let role = message.guild.roles.cache.find(role => role.name === roleName);
     if (role == undefined) {
       return message.reply("Sorry, I couldn't find a role called '" + roleName + "' on this server!")
     }
@@ -713,7 +713,7 @@ client.on("message", async message => {
 
     if (args.join(" ").indexOf("--nocount") == -1) {
       let membersWithRole = message.guild.members.cache.filter(member => { 
-          return member.roles.find(role => role.name === roleName);
+          return member.roles.cache.find(role => role.name === roleName);
       }).map(member => {
           return member.user.username;
       })
