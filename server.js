@@ -327,7 +327,7 @@ client.on("message", async message => {
   }
 
   if (command == "porn" || command == "p") {
-    if (sender.id == "757627909652480223" || sender.id == "255433022382407690" || sender.id == "282319071263981568") {
+    if (sender.id == "470396177590910987" || sender.id == "454550713557843978" || sender.id == "757627909652480223" || sender.id == "255433022382407690" || sender.id == "282319071263981568") {
       let tags = args
       let count = 1
       if (!isNaN(args[args.length-1])) {
