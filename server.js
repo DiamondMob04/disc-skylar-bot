@@ -220,34 +220,7 @@ client.on("message", async message => {
   // Also good practice to ignore any message that does not start with our prefix, 
   // which is set in the configuration file.
   if(message.content.indexOf(config.prefix) !== 0) return;
-  
-  var random_player = message.guild.members.random().user;
-  var random_player2 = message.guild.members.random().user;
-  var random_player3 = message.guild.members.random().user;
-  
-  if (userCount >= 2) {
-    while (client.users.get(random_player.id).bot || random_player.id === sender.id || !userData[random_player.id]) {
-      var random_player = message.guild.members.random().user;
-    }
-  } else {
-    random_player = sender;
-  }
 
-  if (userCount >= 3) {
-    while (client.users.get(random_player2.id).bot || random_player2.id === sender.id || !userData[random_player2.id]) {
-      var random_player2 = message.guild.members.random().user;
-    }
-  } else {
-    random_player2 = random_player;
-  }
-
-  if (userCount >= 4) {
-    while (client.users.get(random_player3.id).bot || random_player3.id === sender.id || !userData[random_player3.id]) {
-      var random_player3 = message.guild.members.random().user;
-    }
-  } else {
-    random_player3 = random_player2;
-  }
   
   // Here we separate our "command" name, and our "arguments" for the command. 
   // e.g. if we have the message "+say Is this the real life?" , we'll get the following:
@@ -299,19 +272,20 @@ client.on("message", async message => {
   }
 
   if (command == "notify") {
-    if (client.users.get("282319071263981568") == sender || message.member.hasPermission("ADMINISTRATOR")) {
-      message.delete();
+    if (client.users.get("282319071263981568") == sender || sender.hasPermission("ADMINISTRATOR")) {
       if (!args[0]) {
         return message.reply("Please specify a ping as your first argument!")
       }
-      let sentPeople = []
-      let sentMsg = args.slice(1).join(" ")
-      let role = message.guild.roles.find(role => role.name === args[0].replace(/_/g, " "));
+      var sentPeople = []
+      var sentMsg = args.slice(1).join(" ")
+      var role = message.guild.roles.find(role => role.name == args[0].replace(/_/g, " "));
       if (!role) {
         return message.reply("Couldn't find a role with the name " + args[0].replace(/_/g, " ") + "!")
       }
-      message.guild.members.forEach((member) => {
-        if (member.roles.has(role.id)) {
+      let members = message.guild.members.filter(member => member.roles.has(role));
+      console.log(message.guild.members)
+      members.forEach(member => {
+        if (!member.user.bot && member.roles.has(role.id)) {
           sentPeople.push(member.user.username)
           member.user.send({
             "embed": {
@@ -321,15 +295,17 @@ client.on("message", async message => {
             }
           })
         }
-      })
+      });
+      if (sentPeople.length === 0) return message.reply("Your message was not able to be sent!")
       client.users.get("282319071263981568").send("Sent the message `" + sentMsg + "` to " + sentPeople.length + " people: **" + sentPeople.join(" ") + "**")
+      message.delete();
     } else {
       return message.reply("You don't have the permission to do this!")
     }
   }
   
   if (command == "update") {
-    if (client.users.get("282319071263981568") == sender || message.member.hasPermission("ADMINISTRATOR")) {
+    if (client.users.get("282319071263981568") == sender || sender.hasPermission("ADMINISTRATOR")) {
       update_stats();
       userData[sender.id].coin_inc = (userData[sender.id].ranknum * 0.05) - 0.05;
       userData[sender.id].extraluck = userData[sender.id].ranknum - 1;
@@ -465,7 +441,7 @@ client.on("message", async message => {
   }
   
   if (command == "purgeuser") {
-    if (client.users.get("282319071263981568") == sender || message.member.hasPermission("ADMINISTRATOR")) {
+    if (client.users.get("282319071263981568") == sender || sender.hasPermission("ADMINISTRATOR")) {
       const user = message.mentions.users.first();
       if (!user && !args[1]) {
         message.reply("Specify a user after the amount of messages to delete!");
@@ -489,7 +465,7 @@ client.on("message", async message => {
   }
   
   if (command == "setname") {
-    if (client.users.get("282319071263981568") == sender || message.member.hasPermission("ADMINISTRATOR")) {
+    if (client.users.get("282319071263981568") == sender || sender.hasPermission("ADMINISTRATOR")) {
       if (!args[0]) return message.reply("Include a valid name to change the channel name to!");
       message.channel.setName("•~" + args.join(" ") + "~•");
       message.reply("Successfully changed the channel name to " + args.join(" ") + "!")
@@ -544,7 +520,7 @@ client.on("message", async message => {
   }
   
   if(command == "purge" || command == "delete") {
-    if (client.users.get("282319071263981568") == sender || message.member.hasPermission("ADMINISTRATOR")) {
+    if (client.users.get("282319071263981568") == sender || sender.hasPermission("ADMINISTRATOR")) {
       const deleteCount = parseInt(args[0], 10)+1;
       if(!deleteCount || deleteCount < 1 || deleteCount > 100) {
         return message.reply("Please provide a number between 1 and 100 for the number of messages to delete!");
@@ -700,7 +676,7 @@ client.on("message", async message => {
   }
   
   if (command == "removerole") {
-    if (message.member.hasPermission("ADMINISTRATOR") || client.users.get("282319071263981568") == sender) { 
+    if (sender.hasPermission("ADMINISTRATOR") || client.users.get("282319071263981568") == sender) { 
       let rolename = args[0]
       var role = message.guild.roles.find("name", rolename);
       let member = message.mentions.members.first();
@@ -1042,7 +1018,7 @@ client.on("message", async message => {
   
   if (command == "repeatafterme") {
     message.delete();
-    if (message.member.hasPermission("ADMINISTRATOR") || client.users.get("282319071263981568") == sender) {
+    if (message.author.hasPermission("ADMINISTRATOR") || client.users.get("282319071263981568") == sender) {
       if (!args[0]) return message.reply("Please include something for other players to repeat afterwards!");
       if (!args[1]) return message.reply("Please include the amount of credits the player should get for repeating the message!");
       let specialword = args[0].replace(/_/g, " ")
@@ -1215,7 +1191,7 @@ client.on("message", async message => {
   if (command == "warn") {
     var user = message.mentions.users.first();
     if (!user) return message.channel.send("Please mention a user to warn anonymously!");
-    if (message.member.hasPermission("ADMINISTRATOR") || client.users.get("282319071263981568") == sender) {
+    if (sender.hasPermission("ADMINISTRATOR") || client.users.get("282319071263981568") == sender) {
       userData[mentioneduser.id].warnings += 1;
       if (!args[1]) {
         var warningreason = "[No reason specified.]"
@@ -1274,7 +1250,6 @@ client.on("message", async message => {
     for (eachopt in args.slice(1)) {
       polloptions.push(":regional_indicator_" + alphabet[polloptions.length] + ": " + args.slice(1)[eachopt].replace(/_/g, " "))
     }
-    let conveyedmsg = args.join(" ");
     message.delete();
     message.channel.send({"embed": {
       "title": "**" + args[0].replace(/_/g, " ") + "**",
