@@ -350,6 +350,7 @@ client.on("message", async message => {
               msg.react("✅")
               msg.awaitReactions((reaction, user) => !user.bot && (reaction.emoji.name == '❌' || reaction.emoji.name == '✅'), {max: 1, time: 180000}).then((collected) => {
                 if (collected.first().emoji.name == "❌") {
+                  msg.reply("The post was deleted by " + user.user.username + ".").then(temp => temp.delete({timeout: 3000}))
                   return msg.delete()
                 } else {
                   return msg.reply("The post above can no longer be deleted by reaction messages.").then(temp => temp.delete({timeout: 3000}))
@@ -360,6 +361,7 @@ client.on("message", async message => {
         }
       })
     }
+    message.delete({timeout: 3000})
   }
   
   if (command == "update") {
