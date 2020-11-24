@@ -87,7 +87,7 @@ client.on("ready", () => {
   // client.users.cache.get('603790639502589964').send("")
   // client.channels.get('696116524750077993').send({files: ["https://i.ibb.co/JjYfhFn/Sadlenium.png"]})
   
-  client.user.setActivity("for s!help", {type: "LISTENING"});
+  client.user.setActivity("s!help", {type: "LISTENING"});
   update_stats();
   setInterval(increment_health, 180000);
 });
@@ -118,13 +118,13 @@ client.on('guildMemberRemove', member => {
 client.on("guildCreate", guild => {
   // This event triggers when the bot joins a guild.
   console.log(`New guild joined: ${guild.name} (id: ${guild.id}). This guild has ${guild.memberCount} members!`);
-  client.user.setActivity("s!help");
+  client.user.setActivity("s!help", {type: "LISTENING"});
 });
 
 client.on("guildDelete", guild => {
   // this event triggers when the bot is removed from a guild.
   console.log(`I have been removed from: ${guild.name} (id: ${guild.id})`);
-  client.user.setActivity("s!help");
+  client.user.setActivity("s!help", {type: "LISTENING"});
 });
 
 client.on("message", async message => {
@@ -150,7 +150,6 @@ client.on("message", async message => {
   var sender = message.author;
   if (message.mentions.members) var mentioned = message.mentions.members.first();
   if (message.mentions.users) var mentioneduser = message.mentions.users.first();
-  var userCount = message.guild.members.cache.filter(member => !member.user.bot).size;
   const serverinfo = "(" + message.guild.name + ") "
   var consolelog = serverinfo + message.author.username + ": " + config.prefix;
   
