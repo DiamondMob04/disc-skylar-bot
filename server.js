@@ -335,10 +335,10 @@ client.on("message", async message => {
       tags = tags.join(" ").toLowerCase().trim()
       got("https://e621.net/posts?tags=" + tags).then((response) => {
         let $ = cheerio.load(response.body);
-        if ($(".has-cropped-true").length === 0) {
+        if ($(".has-cropped-true").length + $(".has-cropped-false").length === 0) {
           return message.reply("We couldn't find any results for those tags! Maybe try something else?")
         }
-        let imagePool = $(".has-cropped-true")
+        let imagePool = $(".has-cropped-true,.has-cropped-false")
         shuffle(imagePool)
         for (let i = 0; i < count; i++) {
           if (imagePool.length === 0) return;
