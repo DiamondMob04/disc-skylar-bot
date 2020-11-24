@@ -569,17 +569,20 @@ client.on("message", async message => {
     }
   }
   
-  if(command == "purge" || command == "delete") {
-    if (client.users.cache.get("282319071263981568") == sender || message.member.hasPermission("ADMINISTRATOR")) {
+  if(command == "purge" || command == "clear") {
+    if (message.member.hasPermission("ADMINISTRATOR")) {
       const deleteCount = parseInt(args[0], 10)+1;
       if(!deleteCount || deleteCount < 1 || deleteCount > 100) {
-        return message.reply("Please provide a number between 1 and 100 for the number of messages to delete!");
+        return message.reply("You can only delete between 1-99 messages!");
       }
-      const fetched = await message.channel.fetchMessages({limit: deleteCount});
-      console.log(consolelog + "purge " + (deleteCount - 1) + " => Success!")
-      message.channel.bulkDelete(fetched)
-        .catch(error => message.reply(`Couldn't delete messages because of: ${error}`));
+      const fetched = await message.channel.messages.fetch({limit: deleteCount});
+      try {
+        message.channel.bulkDelete(fetched)
+      } catch (error) {
+        message.reply(`I couldn't do that because of ${error}!"`);
+      }
     }
+    return
   }
   
   if (command == "steal" || command == "rob") {
