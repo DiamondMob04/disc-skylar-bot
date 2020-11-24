@@ -346,7 +346,7 @@ client.on("message", async message => {
           let targetImage = imagePool[i]
           got("https://e621.net" + targetImage.parent.parent.attribs.href).then((response_two) => {
             $ = cheerio.load(response_two.body);
-            message.channel.send($("#image")[0].attribs.src).then(message => message.delete(60000))
+            message.channel.send($("#image")[0].attribs.src).then(message => message.delete({timeout: 60000}))
           })
         }
       })
