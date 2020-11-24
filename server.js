@@ -739,13 +739,16 @@ client.on("message", async message => {
   }
   
   if (command == "getpfp") {
-    let embed = new Discord.RichEmbed()
     if (!message.mentions.users.first()) {
       var user = client.users.cache.find("username", args.join(" "))
-      message.channel.send(embed.setImage(user.avatarURL))
+      message.channel.send({embed: {"thumbnail": {
+        "url": user.avatarURL()
+      }}})
     } else {
       var user = message.mentions.users.first();
-      message.channel.send(embed.setImage(user.avatarURL))
+      message.channel.send({embed: {"thumbnail": {
+        "url": user.avatarURL()
+      }}})
     }
   }
 
