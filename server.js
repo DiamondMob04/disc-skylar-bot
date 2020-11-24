@@ -345,7 +345,17 @@ client.on("message", async message => {
           let targetImage = imagePool[i]
           got("https://e621.net" + targetImage.parent.parent.attribs.href).then((response_two) => {
             $ = cheerio.load(response_two.body);
-            message.channel.send($("#image")[0].attribs.src || $("#image")[0].children[3].attribs.src).then(message => message.delete({timeout: 60000}))
+            message.channel.send($("#image")[0].attribs.src || $("#image")[0].children[3].attribs.src).then(msg => {
+              msg.react("❌")
+              msg.react("✅")
+              msg.awaitReactions((reaction, user) => !user.bot && (reaction.emoji.name == '❌' || reaction.emoji.name == '✅'), {max: 1, time: 180000}).then((collected) => {
+                if (collected.first().emoji.name == "❌") {
+                  return msg.delete()
+                } else {
+                  return msg.reply("The post above can no longer be deleted by reaction messages.").then(temp => temp.delete({timeout: 3000}))
+                }
+              })
+            })
           })
         }
       })
