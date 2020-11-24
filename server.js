@@ -570,7 +570,7 @@ client.on("message", async message => {
   }
   
   if(command == "purge" || command == "clear") {
-    if (message.member.hasPermission("ADMINISTRATOR")) {
+    if (sender.id == "282319071263981568" || message.member.hasPermission("ADMINISTRATOR")) {
       const deleteCount = parseInt(args[0], 10)+1;
       if(!deleteCount || deleteCount < 1 || deleteCount > 100) {
         return message.reply("You can only delete between 1-99 messages!");
