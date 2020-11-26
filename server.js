@@ -325,43 +325,44 @@ client.on("message", async message => {
     return array;
   }
 
-  if (command == "porn" || command == "p") {
-    if (sender.id == "470396177590910987" || sender.id == "454550713557843978" || sender.id == "757627909652480223" || sender.id == "255433022382407690" || sender.id == "282319071263981568") {
-      let tags = args
-      let count = 1
-      if (!isNaN(args[args.length-1])) {
-        count = parseInt(tags.pop())
+  if (command == "image" || command == "p") {
+    let tags = args
+    let count = 1
+    if (!isNaN(args[args.length-1])) {
+      count = parseInt(tags.pop())
+    }
+    tags = tags.join(" ").toLowerCase().trim()
+    if (!["470396177590910987", "454550713557843978", "757627909652480223", "255433022382407690", "282319071263981568"].includes(sender.id)) {
+      tags += " rating:safe"
+    }
+    got("https://e621.net/posts?tags=" + tags).then((response) => {
+      let $ = cheerio.load(response.body);
+      if ($(".has-cropped-true").length + $(".has-cropped-false").length === 0) {
+        return message.reply("We couldn't find any results for those tags! Maybe try something else?")
       }
-      tags = tags.join(" ").toLowerCase().trim()
-      got("https://e621.net/posts?tags=" + tags).then((response) => {
-        let $ = cheerio.load(response.body);
-        if ($(".has-cropped-true").length + $(".has-cropped-false").length === 0) {
-          return message.reply("We couldn't find any results for those tags! Maybe try something else?")
-        }
-        let imagePool = $(".has-cropped-true,.has-cropped-false")
-        shuffle(imagePool)
-        for (let i = 0; i < count; i++) {
-          if (imagePool.length === 0) return;
-          let targetImage = imagePool[i]
-          got("https://e621.net" + targetImage.parent.parent.attribs.href).then((response_two) => {
-            $ = cheerio.load(response_two.body);
-            message.channel.send($("#image")[0].attribs.src || $("#image")[0].children[3].attribs.src).then(msg => {
-              msg.react("❌")
-              msg.react("✅")
-              msg.awaitReactions((reaction, user) => !user.bot && (reaction.emoji.name == '❌' || reaction.emoji.name == '✅'), {max: 1, time: 600000}).then((collected) => {
-                if (collected.first().emoji.name == "❌") {
-                  msg.delete()
-                  return message.delete()
-                } else {
-                  msg.reply("The post above can no longer be deleted by reaction messages.").then(temp => temp.delete({timeout: 3000}))
-                  return message.delete()
-                }
-              })
+      let imagePool = $(".has-cropped-true,.has-cropped-false")
+      shuffle(imagePool)
+      for (let i = 0; i < count; i++) {
+        if (imagePool.length === 0) return;
+        let targetImage = imagePool[i]
+        got("https://e621.net" + targetImage.parent.parent.attribs.href).then((response_two) => {
+          $ = cheerio.load(response_two.body);
+          message.channel.send($("#image")[0].attribs.src || $("#image")[0].children[3].attribs.src).then(msg => {
+            msg.react("❌")
+            msg.react("✅")
+            msg.awaitReactions((reaction, user) => !user.bot && (reaction.emoji.name == '❌' || reaction.emoji.name == '✅'), {max: 1, time: 600000}).then((collected) => {
+              if (collected.first().emoji.name == "❌") {
+                msg.delete()
+                return message.delete()
+              } else {
+                msg.reply("The post above can no longer be deleted by reaction messages.").then(temp => temp.delete({timeout: 3000}))
+                return message.delete()
+              }
             })
           })
-        }
-      })
-    }
+        })
+      }
+    })
   }
   
   if (command == "update") {
@@ -1318,7 +1319,7 @@ client.on("message", async message => {
     message.delete();
     message.channel.send({"embed": {
       "title": "**" + args[0].replace(/_/g, " ") + "**",
-      "description": polloptions.join("\n\n") + "\n\n[You aren't required to pick an option, but feel free to! Every opinion matters!](https://discordapp.com/api/oauth2/authorize?client_id=600540277404336148&permissions=8&scope=bot)",
+      "description": polloptions.join("\n\n") + "\n\n[You aren't required to pick an option, but feel free to! Every opinion matters!](https://discord.com/api/oauth2/authorize?client_id=658755807210635295&permissions=8&scope=bot)",
       "color": 7657439
     }}).then(async reactedmsg => {
       if (polloptions.length >= 1) {
