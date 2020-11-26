@@ -880,6 +880,10 @@ client.on("message", async message => {
             {
               "name": config.prefix + "togglemute",
               "value": "Toggle the discord notifications you get from this bot when you level up."
+            },
+            {
+              "name": config.prefix + "image <tags> [number]",
+              "value": "Sends a number of posts that fit the specified tags. Example: `" + config.prefix + "image cat 5`"
             }
           ]
         }
