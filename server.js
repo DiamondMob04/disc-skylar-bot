@@ -4,14 +4,14 @@ const fs = require('fs');
 const moment = require('moment');
 const cheerio = require("cheerio");
 const got = require("got");
+const path = require("path")
 
-const client = new Discord.Client();
+const client = new Discord.Client({ ws: { intents: new Discord.Intents(Discord.Intents.ALL) }});
 var userData = JSON.parse(fs.readFileSync('userData.json'));
 var extraVars = JSON.parse(fs.readFileSync('extraVars.json'));
 var images = JSON.parse(fs.readFileSync('images.json'));
 
 const nullescape = "84230409uau80na098d9fipaok4"
-const format = "YYYYMMDD, h:mm a";
 extraVars["playerid"] = nullescape;
 
 const express = require('express');
@@ -21,11 +21,16 @@ app.get("/", (req, res) => {
   res.sendStatus(200);
 });
 
-app.listen(process.env.PORT);
+app.get("/smg", (req, res) => {
+  res.sendFile(path.join(__dirname, "/index.html"));
+})
+
+app.use(express.static(__dirname));
+
+app.listen(process.env.PORT || 3000);
 
 // Here we load the config.json file that contains our token and our prefix values. 
 const config = require("./package.json");
-const { measureMemory } = require("vm");
 // config.token contains the bot's token
 // config.prefix contains the message prefix.
 function update_stats() {
@@ -641,10 +646,13 @@ client.on("message", async message => {
   if (command == "credits" || command == "bal" || command == "coins" || command == "stats" || command == "rank") {
     if (args[0]) {
       try {
-        mentioneduser = client.users.cache.find("username", args.join(" "))
+        mentioneduser = client.users.cache.find(u => {
+          if (u !== undefined) { u.username === args.join(" ") }
+        })
         mentioned = true;
       }
       catch (error) {
+        console.log(error)
         return message.reply("Sorry, I couldn't find user '" + args.join(" ") + "'!");
       }
     }
@@ -925,10 +933,6 @@ client.on("message", async message => {
               "value": "Toggle dad messages! When enabled, Skylar will annoy someone whenever they start a sentence with 'i', 'i am', 'im', or 'i'm'."
             },
             {
-              "name": config.prefix + "snipe",
-              "value": "Snipe a recently deleted message!"
-            },
-            {
               "name": config.prefix + "saveimage <name> <url (optional)>",
               "value": "Save an image to the database. You can send this image anonymously through the bot with s!postimage!"
             },
@@ -1017,11 +1021,7 @@ client.on("message", async message => {
     }
     return message.reply("The highest rank player on the server is " + PlayerUsername + " with " + userData[PlayerId].rep + " reputation points!");
   }
-  
-  function toopoor() {
-    return message.reply("You don't enough funds to purchase that item!");
-  }
-  
+
   if (command == "setcred") {
     var user = message.mentions.users.first();
     if (!user) return message.reply("Hey! Mention a user, bud!");
