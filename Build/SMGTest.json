@@ -1,7 +1,7 @@
 {
 "companyName": "Selenium Inc",
 "productName": "Sunday Morning Groovin",
-"productVersion": "1.1 (BETA)",
+"productVersion": "1.2 (BETA)",
 "dataUrl": "SMGTest.data.unityweb",
 "wasmCodeUrl": "SMGTest.wasm.code.unityweb",
 "wasmFrameworkUrl": "SMGTest.wasm.framework.unityweb",
