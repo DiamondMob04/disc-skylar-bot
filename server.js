@@ -237,7 +237,7 @@ client.on("message", async message => {
   const command = args.shift().toLowerCase();
   
   // Let's go with a few common example commands! Feel free to delete or change those.
-  
+
   if (command == "saveimage") {
     if (!args[0])
       return message.reply("Please include valid arguments to the command: **" + config.prefix + "saveimage name image_url** (image url is optional, you can send the actual image.)");
