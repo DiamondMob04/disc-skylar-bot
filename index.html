@@ -8,18 +8,19 @@
     <link rel="stylesheet" href="TemplateData/style.css">
     <script src="TemplateData/UnityProgress.js"></script>
     <script src="Build/UnityLoader.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
       var unityInstance = UnityLoader.instantiate("unityContainer", "Build/SMGTest.json", {onProgress: UnityProgress});
     </script>
+    <style>
+      html {
+        background: rgb(61, 61, 61);
+      }
+    </style>
   </head>
   <body>
-    <div class="webgl-content">
-      <div id="unityContainer" style="width: 1280px; height: 720px"></div>
-      <div class="footer">
-        <div class="webgl-logo"></div>
-        <div class="fullscreen" onclick="unityInstance.SetFullscreen(1)"></div>
-        <div class="title">Sunday Morning Groovin</div>
-      </div>
+    <div class="webgl-content" style="border: 10px solid rgb(185, 185, 185);">
+      <div id="unityContainer" style="width: 1024px; height: 576px;"></div>
     </div>
   </body>
 </html>
