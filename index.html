@@ -14,14 +14,20 @@
       var unityInstance = UnityLoader.instantiate("unityContainer", "Build/SMGTest.json", {onProgress: UnityProgress});
     </script>
     <style>
-      html {
-        background: rgb(61, 61, 61);
+      .fullscreen:hover {
+        cursor: pointer;
       }
     </style>
   </head>
   <body>
-    <div class="webgl-content" style="border: 10px solid rgb(185, 185, 185);">
-      <div id="unityContainer" style="width: 1126px; height: 634px;"></div>
+    <div class="webgl-content">
+      <div id="unityContainer" style="width: 1088px; height: 612px;">
+      </div>
+      <div class="footer">
+        <div class="webgl-logo"></div>
+        <div class="fullscreen" onclick="unityInstance.SetFullscreen(1)"></div>
+        <div class="title">Sunday Morning Groovin (v1.3)</div>
+      </div>
     </div>
   </body>
 </html>
