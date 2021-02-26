@@ -1312,6 +1312,12 @@ client.on("message", async message => {
     })
     return
   }
+
+  if (command == "join") {
+    const channel = client.channels.cache.get("736511371746738210");
+    channel.join();
+    return message.delete();
+  }
   
   if (command == "poll") {
     let polloptions = []
