@@ -200,16 +200,9 @@ client.on("message", async message => {
   })
   
   
-  const content = message.content.trim().split(/ +/g);
-    if (extraVars["dadbot"]) {
-      if (message.content[0].toLowerCase() == "im" || message.content[0].toLowerCase() == "i'm") {
-        message.channel.send("Hi " + content.slice(1).join(" ") + ", I'm Skylar!")
-      }
-      if (message.content[0].toLowerCase() + message.content[1].toLowerCase() == "iam") {
-        message.channel.send("Hi " + content.slice(2).join(" ") + ", I'm Skylar!")
-      }
-    }
-  
+  if (message.content.toLowerCase().includes("your welcome")) {
+    return message.reply("you're*");
+  }
   
   userData[sender.id].messages++;
   if (message.channel.id != '674055833469976596' && message.channel.id != '674055875186393108') {
@@ -677,63 +670,6 @@ client.on("message", async message => {
     message.channel.send("**\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n**")
   }
   
-  if (command == "togglemessages") {
-    if (client.users.cache.get("282319071263981568") == sender) {
-      extraVars['togglewelcome'] = !extraVars['togglewelcome']
-      var check = "**not** "
-      if (extraVars['togglewelcome']) {
-        var check = ""
-      }
-      message.reply("Welcome/leave messages will now " + check + "be sent when a player joins/leaves the server.")
-    }
-  }
-  
-  if (command == "setwelcomechannel") {
-    if (client.users.cache.get("282319071263981568") == sender || client.users.cache.get("603790639502589964") == sender || client.users.cache.get("655452272284925962") == sender || client.users.cache.get("655452272284925962") == sender) {
-      if (!args) {
-        message.reply("Please specify the name of a channel for the welcome message!")
-      }
-      const channel = client.guilds.cache.get('673903805431283754').channels.find(c => c.name === args.join(" "));
-      const id = channel ? channel.id : null;
-      if (!id) return message.reply("Sorry, please enter the name of a valid channel for the welcome message!")
-      extraVars["channelname"] = args.join(" ")
-      return message.reply("Successfully set channel to **#" + extraVars["channelname"] + "**!") 
-    }
-  }
-  
-  if (command == "setwelcomemessage") {
-    if (client.users.cache.get("282319071263981568") == sender || client.users.cache.get("603790639502589964") == sender || client.users.cache.get("655452272284925962") == sender || client.users.cache.get("509877006339538954") == sender) {
-      if (!args) {
-        message.reply("Please specify a message to send!")
-      }
-      extraVars["channelmessage"] = args.join(" ")
-      return message.reply("Successfully set welcome message to '" + extraVars["channelmessage"] + "'!") 
-    }
-  }
-  
-  if (command == "setleavechannel") {
-    if (client.users.cache.get("282319071263981568") == sender || client.users.cache.get("603790639502589964") == sender || client.users.cache.get("655452272284925962") == sender || client.users.cache.get("509877006339538954") == sender) {
-      if (!args) {
-        message.reply("Please specify the name of a channel for the leave message!")
-      }
-      const channel = client.guilds.cache.get('673903805431283754').channels.find(c => c.name === args.join(" "));
-      const id = channel ? channel.id : null;
-      if (!id) return message.reply("Sorry, please enter the name of a valid channel for the leave message!")
-      extraVars["channelquitname"] = args.join(" ")
-      return message.reply("Successfully set channel to **#" + extraVars["channelquitname"] + "**!") 
-    }
-  }
-  
-  if (command == "setleavemessage") {
-    if (client.users.cache.get("282319071263981568") == sender || client.users.cache.get("603790639502589964") == sender || client.users.cache.get("655452272284925962") == sender || client.users.cache.get("509877006339538954") == sender) {
-      if (!args) {
-        message.reply("Please specify a message to send!")
-      }
-      extraVars["channelquitmessage"] = args.join(" ")
-      return message.reply("Successfully set leave message to '" + extraVars["channelquitmessage"] + "'!") 
-    }
-  }
-  
   if (command == "sudojoin") {
     if (client.users.cache.get("282319071263981568") == sender || client.users.cache.get("603790639502589964") == sender || client.users.cache.get("655452272284925962") == sender || client.users.cache.get("509877006339538954") == sender) {
       if (!args[0]) {
@@ -974,26 +910,6 @@ client.on("message", async message => {
             {
               "name": config.prefix + "repeatafterme <repeatmessage> <creditreward>",
               "value": "Make other players repeat a message for credits. Put underscores for spaces in the repeat message."
-            },
-            {
-              "name": config.prefix + "togglemessages",
-              "value": "Changes if a welcome/quit message will be sent (from this bot) when a new player joins/leaves the server."
-            },
-            {
-              "name": config.prefix + "setwelcomechannel <channel>",
-              "value": "Changes the channel that the welcome message will be sent in when a player joins the server."
-            },
-            {
-              "name": config.prefix + "setwelcomemessage <message>",
-              "value": "Changes the message that is sent when a new player joins the server.\nExample: " + config.prefix + "setwelcomemessage {mention_player} Welcome to the server, {player}!"
-            },
-            {
-              "name": config.prefix + "setleavechannel <channel>",
-              "value": "Changes the channel that the quit message will be sent in when a player leaves the server."
-            },
-            {
-              "name": config.prefix + "setleavemessage <message>",
-              "value": "Changes the message that is sent when a player leaves the server.\nExample: " + config.prefix + "setleavemessage {mention_player} Cya later, {player}!"
             },
             {
               "name": config.prefix + "count <role name>",
