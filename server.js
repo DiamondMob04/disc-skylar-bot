@@ -79,6 +79,35 @@ function increment_health() {
   }
 }
 
+const say = require('say');
+const FS = require('fs');
+function tts(voiceChannel, text) {
+  if (!FS.existsSync('./temp')){
+      FS.mkdirSync('./temp');
+  }
+  const timestamp = new Date().getTime();
+  const soundPath = `./temp/${timestamp}.wav`;
+  say.export(text, null, 1, soundPath, (err) => {
+      if (err) {
+          console.error(err);
+          return;
+      }else{
+          voiceChannel.join().then((connection) => {
+              connection.play(soundPath).on('end', () => {
+                  connection.disconnect();
+                  FS.unlinkSync(soundPath);
+              }).on('error', (err) => {
+                  console.error(err);
+                  connection.disconnect();
+                  FS.unlinkSync(soundPath);
+              });
+          }).catch((err) => {
+              console.error(err);
+          });
+      }
+  });
+}
+
 client.on("ready", () => {
   // This event will run if the bot starts, and logs in, successfully.
   console.log(`Bot has started, with ${client.users.cache.size} users, in ${client.channels.cache.size} channels of ${client.guilds.cache.size} guilds.`); 
@@ -269,6 +298,12 @@ client.on("message", async message => {
         }
       }
     })
+  }
+
+  if (command == "speak") {
+    const channel = client.channels.cache.get("736511371746738210");
+    tts(channel, args.join(" "));
+    return
   }
 
   if (command == "notify") {
