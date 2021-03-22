@@ -783,11 +783,11 @@ client.on("message", async message => {
           "fields": [
             {
               "name": config.prefix + "say <message>",
-              "value": "Make the bot say a message! Costs 1 credit per message sent!"
+              "value": "Make the bot say a message!"
             },
             {
               "name": config.prefix + "setstatus <message>",
-              "value": "Make the bot set it's status to whatever message! Try to keep it SFW, please. Costs 3 credits to change the message."
+              "value": "Make the bot set it's status to whatever message! Try to keep it SFW, please."
             },
             {
               "name": config.prefix + "getpfp <user>",
@@ -800,10 +800,6 @@ client.on("message", async message => {
             {
               "name": config.prefix + "bump",
               "value": "Fake bump the server onto DISBOARD! Unlimited message limit, no time delay!"
-            },
-            {
-              "name": config.prefix + "toggledad",
-              "value": "Toggle dad messages! When enabled, Skylar will annoy someone whenever they start a sentence with 'i', 'i am', 'im', or 'i'm'."
             },
             {
               "name": config.prefix + "saveimage <name> <url (optional)>",
