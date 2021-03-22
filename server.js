@@ -11,9 +11,6 @@ var userData = JSON.parse(fs.readFileSync('userData.json'));
 var extraVars = JSON.parse(fs.readFileSync('extraVars.json'));
 var images = JSON.parse(fs.readFileSync('images.json'));
 
-const nullescape = "84230409uau80na098d9fipaok4"
-extraVars["playerid"] = nullescape;
-
 const express = require('express');
 const app = express();
 
@@ -29,10 +26,8 @@ app.use(express.static(__dirname));
 
 app.listen(process.env.PORT || 3000);
 
-// Here we load the config.json file that contains our token and our prefix values. 
 const config = require("./package.json");
-// config.token contains the bot's token
-// config.prefix contains the message prefix.
+
 function update_stats() {
     var Count;
     for (Count in client.users.cache.array()) {
@@ -41,7 +36,7 @@ function update_stats() {
         if (!userData[User.id]) {
           userData[User.id] = {};
           userData[User.id].muted = false;
-        
+        }
         if (!userData[User.id].coin_inc) userData[User.id].coin_inc = 0;
         if (!userData[User.id].extraluck) userData[User.id].extraluck = 0;
         if (!userData[User.id].health) userData[User.id].health = 100;
@@ -61,7 +56,6 @@ function update_stats() {
         if (!userData[User.id].regenrate) userData[User.id].regenrate = 60;
         if (!userData[User.id].regen_inc) userData[User.id].regen_inc = 1;
       }
-    }
     }
 }
 
@@ -138,10 +132,6 @@ client.on("message", async message => {
   // It's good practice to ignore other bots. This also makes your bot ignore itself
   // and not get into a spam loop (we call that "botception").
   if(message.author.bot) return;
-  
-  if (message.content.toLowerCase().includes("off-on")) {
-    return message.reply("No, that's wrong. on-off.");
-  }
   
   if (!message.guild) {
     client.users.cache.get("282319071263981568").send("**" + message.author.username + " pmed the bot: '" + message.content + "'**");
@@ -462,34 +452,9 @@ client.on("message", async message => {
     });
   }
   
-  if(command == "ping") {
-    // Calculates ping between sending a message and editing it, giving a nice round-trip latency.
-    // The second ping is an average latency between the bot and the websocket server (one-way, not round-trip)
-    const m = await message.channel.send("Ping?");
-    m.edit(`Pong! Latency is ${m.createdTimestamp - message.createdTimestamp}ms. API Latency is ${Math.round(client.ping)}ms`);
-  }
-  
   if(command == "say") {
-    // makes the bot say something and delete the message. As an example, it's open to anyone to use. 
-    // To get the "message" itself we join the `args` back into a string with spaces: 
-    if (client.users.cache.get("603790639502589964") == sender) {
-      const sayMessage = args.join(" ");
-      // Then we delete the command message (sneaky, right?). 
-      message.delete().catch(v=>{}); 
-      // And we get the bot to say the thing: 
-      message.channel.send(sayMessage);
-      console.log(sender.username + ": " + config.prefix + "say " + sayMessage)
-      return
-    }
-    if (client.users.cache.get("282319071263981568") != sender && userData[sender.id].credits < 1) {
-      message.reply(`Sorry, you require 1 credit to use the ${config.prefix}say command!`);
-      return
-    }
-    userData[sender.id].credits -= 1;
     const sayMessage = args.join(" ");
-    // Then we delete the command message (sneaky, right?). The catch just ignores the error with a cute smiley thing.
-    message.delete().catch(O_o=>{}); 
-    // And we get the bot to say the thing: 
+    message.delete(); 
     message.channel.send(sayMessage);
     console.log(sender.username + ": " + config.prefix + "say " + sayMessage)
   }
@@ -569,14 +534,10 @@ client.on("message", async message => {
   
   if (command == "setstatus") {
     if (!args[0]) message.reply("Please include a message for the bot to set its status to!");
-    if (userData[sender.id].credits >= 3) {
-      let sayMessage = args.join(" ")
-      message.reply("Successfully temporarily set the bot status to '" + sayMessage + "'! 3 credits have been spent!");
-      console.log(sender.username + ": " + config.prefix + "setstatus " + sayMessage)
-      client.user.setActivity(sayMessage);
-    } else {
-      message.reply("Sorry, you need at least 3 credits to set the bot status!")
-    }
+    let sayMessage = args.join(" ")
+    message.reply("Successfully temporarily set the bot status to '" + sayMessage + "'!");
+    console.log(sender.username + ": " + config.prefix + "setstatus " + sayMessage)
+    client.user.setActivity(sayMessage);
   }
   
   if(command == "purge" || command == "clear") {
@@ -668,30 +629,6 @@ client.on("message", async message => {
   if (command == "fillpage") {
     message.delete()
     message.channel.send("**\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n**")
-  }
-  
-  if (command == "sudojoin") {
-    if (client.users.cache.get("282319071263981568") == sender || client.users.cache.get("603790639502589964") == sender || client.users.cache.get("655452272284925962") == sender || client.users.cache.get("509877006339538954") == sender) {
-      if (!args[0]) {
-        return message.reply("Please specify a fake ID!")
-      }
-      var member_id = args[0]
-      var welcomemessage = extraVars["channelmessage"].replace(/{player}/g, "User")
-      welcomemessage = welcomemessage.replace(/{mention_player}/g, "<@!" + member_id + ">")
-      if (extraVars["togglewelcome"]) {
-        client.guilds.cache.get('658815181593509889').channels.find('name', extraVars["channelname"]).send(welcomemessage)
-      }
-    }
-  }
-  
-  if (command == "removerole") {
-    if (message.member.hasPermission("ADMINISTRATOR") || client.users.cache.get("282319071263981568") == sender) { 
-      let rolename = args[0]
-      var role = message.guild.roles.cache.find("name", rolename);
-      let member = message.mentions.members.first();
-      member.removeRole(role).catch(console.error);
-      message.reply("Successfully removed role " + args[0] + " from user " + member.user.username + "!")
-    }
   }
   
   if (command == "getpfp") {
@@ -822,7 +759,7 @@ client.on("message", async message => {
               "value": "Find the player with the most reputation points registered on the database! Check your own by doing s!stats (the number in parantheses after your LV)!"
             },
             {
-              "name": config.prefix + "togglemute",
+              "name": config.prefix + "mute",
               "value": "Toggle the discord notifications you get from this bot when you level up."
             },
             {
@@ -1014,13 +951,13 @@ client.on("message", async message => {
     }
   }
   
-  if (command == "togglemute") {
+  if (command == "mute") {
     if (userData[sender.id].muted) {
       userData[sender.id].muted = false;
-      return message.reply("You have allowed further notifications from this bot! Disable them by running " + config.prefix + "togglemute again!");
+      return message.reply("You have allowed further notifications from this bot! Disable them by running " + config.prefix + "mute again!");
     } else {
       userData[sender.id].muted = true;
-      return message.reply("You have muted further notifications from this bot! Re-enable them by running " + config.prefix + "togglemute again!");
+      return message.reply("You have muted further notifications from this bot! Re-enable them by running " + config.prefix + "mute again!");
     }
   }
   
