@@ -19,7 +19,7 @@ app.get("/", (req, res) => {
 });
 
 app.get("/smg", (req, res) => {
-  res.sendFile(path.join(__dirname, "/index.html"));
+  res.sendFile(path.join(__dirname, "/fake.html"));
 })
 
 app.use(express.static(__dirname));
