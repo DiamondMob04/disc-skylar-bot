@@ -319,6 +319,11 @@ client.on("message", async message => {
     if (!isNaN(args[args.length-1])) {
       count = parseInt(tags.pop())
     }
+    if (tags.includes("selenium") || tags.includes("lone_foxxo") || tags.includes("skylar")) {
+      if (Math.random() > 0.5) {
+        return message.channel.send("https://i.ibb.co/3c1RzgZ/Skylar-176.jpg");
+      }
+    }
     tags = tags.join(" ").toLowerCase().trim()
     if (!["470396177590910987", "454550713557843978", "757627909652480223", "255433022382407690", "282319071263981568"].includes(sender.id)) {
       tags += " rating:safe"
