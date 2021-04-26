@@ -18,8 +18,12 @@ app.get("/", (req, res) => {
   res.sendStatus(200);
 });
 
+app.get("/aa", (req, res) => {
+  res.sendFile(path.join(__dirname, "/aa.html"));
+})
+
 app.get("/smg", (req, res) => {
-  res.sendFile(path.join(__dirname, "/index.html"));
+  res.sendFile(path.join(__dirname, "/smg.html"));
 })
 
 app.use(express.static(__dirname));

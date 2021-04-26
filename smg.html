@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="description" content="If you're reading this, then I probably sent you the discord link for the game. It's pretty chill and there's not really many features, but just know its arrow keys and space/enter to navigate the menus.">
+    <title>Sunday Morning Groovin</title>
+    <link rel="shortcut icon" href="TemplateData/favicon.ico">
+    <link rel="stylesheet" href="TemplateData/style.css">
+    <script src="TemplateData/UnityProgress.js"></script>
+    <script src="Build/UnityLoader.js"></script>
+    <script>
+      // var unityInstance = UnityLoader.instantiate("unityContainer", "Build/Corrupt.json", {onProgress: UnityProgress});
+      var unityInstance = UnityLoader.instantiate("unityContainer", "Build/SMGTest.json", {onProgress: UnityProgress});
+    </script>
+    <style>
+      .fullscreen:hover {
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="webgl-content">
+      <div id="unityContainer" style="width: 1088px; height: 612px;">
+      </div>
+      <div class="footer">
+        <div class="webgl-logo"></div>
+        <div class="fullscreen" onclick="unityInstance.SetFullscreen(1)"></div>
+        <div class="title">Sunday Morning Groovin (v2.0)</div>
+      </div>
+    </div>
+  </body>
+</html>
