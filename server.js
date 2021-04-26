@@ -23,8 +23,8 @@ app.get("/aa", (req, res) => {
 })
 
 app.get("/smg", (req, res) => {
-  //res.status(200).send("Down for maintenance!");
-  res.sendFile(path.join(__dirname, "/smg.html"));
+  res.status(200).send("Down for maintenance!");
+  //res.sendFile(path.join(__dirname, "/smg.html"));
 })
 
 app.use(express.static(__dirname));
