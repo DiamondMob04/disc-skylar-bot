@@ -23,8 +23,8 @@ app.get("/aa", (req, res) => {
 })
 
 app.get("/smg", (req, res) => {
-  //res.status(200).send("Down for maintenance!");
-  res.sendFile(path.join(__dirname, "/smg.html"));
+  res.status(200).send("This game is currently down for the following reason: Kurt is stupid");
+  //res.sendFile(path.join(__dirname, "/smg.html"));
 })
 
 app.use(express.static(__dirname));
