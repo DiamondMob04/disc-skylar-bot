@@ -1,7 +1,7 @@
 {
 "companyName": "Selenium Inc",
 "productName": "SMG",
-"productVersion": "2.0",
+"productVersion": "3.0",
 "dataUrl": "SMG (Web).data.unityweb",
 "wasmCodeUrl": "SMG (Web).wasm.code.unityweb",
 "wasmFrameworkUrl": "SMG (Web).wasm.framework.unityweb",
