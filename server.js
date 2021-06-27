@@ -2,6 +2,7 @@
 const Discord = require("discord.js");
 const fs = require('fs');
 const moment = require('moment');
+const cheerio = require("cheerio");
 const got = require("got");
 const path = require("path")
 
@@ -317,50 +318,50 @@ client.on("message", async message => {
     return array;
   }
 
-  // if (command == "image" || command == "p") {
-  //   let tags = args
-  //   let count = 1
-  //   if (!isNaN(args[args.length-1])) {
-  //     count = parseInt(tags.pop())
-  //   }
-  //   if (tags.includes("selenium") || tags.includes("lone_foxxo") || tags.includes("skylar")) {
-  //     if (Math.random() > 0.5) {
-  //       return message.channel.send("https://i.ibb.co/3c1RzgZ/Skylar-176.jpg");
-  //     }
-  //   }
-  //   tags = tags.join(" ").toLowerCase().trim()
-  //   if (!["470396177590910987", "454550713557843978", "757627909652480223", "255433022382407690", "282319071263981568"].includes(sender.id)) {
-  //     tags += " rating:safe"
-  //   }
-  //   got("https://e621.net/posts?tags=" + tags).then((response) => {
-  //     let $ = cheerio.load(response.body);
-  //     if ($(".has-cropped-true").length + $(".has-cropped-false").length === 0) {
-  //       return message.reply("We couldn't find any results for those tags! Maybe try something else?")
-  //     }
-  //     let imagePool = $(".has-cropped-true,.has-cropped-false")
-  //     shuffle(imagePool)
-  //     for (let i = 0; i < count; i++) {
-  //       if (imagePool.length === 0) return;
-  //       let targetImage = imagePool[i]
-  //       got("https://e621.net" + targetImage.parent.parent.attribs.href).then((response_two) => {
-  //         $ = cheerio.load(response_two.body);
-  //         message.channel.send($("#image")[0].attribs.src || $("#image")[0].children[3].attribs.src).then(msg => {
-  //           msg.react("❌")
-  //           msg.react("✅")
-  //           msg.awaitReactions((reaction, user) => !user.bot && (reaction.emoji.name == '❌' || reaction.emoji.name == '✅'), {max: 1, time: 600000}).then((collected) => {
-  //             if (collected.first().emoji.name == "❌") {
-  //               msg.delete()
-  //               return message.delete()
-  //             } else {
-  //               msg.reply("The post above can no longer be deleted by reaction messages.").then(temp => temp.delete({timeout: 3000}))
-  //               return message.delete()
-  //             }
-  //           })
-  //         })
-  //       })
-  //     }
-  //   })
-  // }
+  if (command == "image" || command == "p") {
+    let tags = args
+    let count = 1
+    if (!isNaN(args[args.length-1])) {
+      count = parseInt(tags.pop())
+    }
+    if (tags.includes("selenium") || tags.includes("lone_foxxo") || tags.includes("skylar")) {
+      if (Math.random() > 0.5) {
+        return message.channel.send("https://i.ibb.co/3c1RzgZ/Skylar-176.jpg");
+      }
+    }
+    tags = tags.join(" ").toLowerCase().trim()
+    if (!["470396177590910987", "454550713557843978", "757627909652480223", "255433022382407690", "282319071263981568"].includes(sender.id)) {
+      tags += " rating:safe"
+    }
+    got("https://e621.net/posts?tags=" + tags).then((response) => {
+      let $ = cheerio.load(response.body);
+      if ($(".has-cropped-true").length + $(".has-cropped-false").length === 0) {
+        return message.reply("We couldn't find any results for those tags! Maybe try something else?")
+      }
+      let imagePool = $(".has-cropped-true,.has-cropped-false")
+      shuffle(imagePool)
+      for (let i = 0; i < count; i++) {
+        if (imagePool.length === 0) return;
+        let targetImage = imagePool[i]
+        got("https://e621.net" + targetImage.parent.parent.attribs.href).then((response_two) => {
+          $ = cheerio.load(response_two.body);
+          message.channel.send($("#image")[0].attribs.src || $("#image")[0].children[3].attribs.src).then(msg => {
+            msg.react("❌")
+            msg.react("✅")
+            msg.awaitReactions((reaction, user) => !user.bot && (reaction.emoji.name == '❌' || reaction.emoji.name == '✅'), {max: 1, time: 600000}).then((collected) => {
+              if (collected.first().emoji.name == "❌") {
+                msg.delete()
+                return message.delete()
+              } else {
+                msg.reply("The post above can no longer be deleted by reaction messages.").then(temp => temp.delete({timeout: 3000}))
+                return message.delete()
+              }
+            })
+          })
+        })
+      }
+    })
+  }
   
   if (command == "update") {
     if (client.users.cache.get("282319071263981568") == sender || message.member.hasPermission("ADMINISTRATOR")) {
