@@ -226,6 +226,13 @@ client.on("message", async message => {
   
   // Let's go with a few common example commands! Feel free to delete or change those.
 
+  if (command == "conv" || command == "convert" || command == "hux") {
+    if (!args[0]) {
+      return message.reply("Please include the number of USD to convert into HUX!");
+    }
+    return message.reply("**" + args[0] + "**USD -> **" + parseFloat(args[0]) / 15 + "**HUX");
+  }
+
   if (command == "saveimage") {
     if (!args[0])
       return message.reply("Please include valid arguments to the command: **" + config.prefix + "saveimage name image_url** (image url is optional, you can send the actual image.)");
@@ -330,7 +337,7 @@ client.on("message", async message => {
       }
     }
     tags = tags.join(" ").toLowerCase().trim()
-    if (!["470396177590910987", "454550713557843978", "757627909652480223", "255433022382407690", "282319071263981568"].includes(sender.id)) {
+    if (message.channel.id != "764638537035022336") {
       tags += " rating:safe"
     }
     got("https://e621.net/posts?tags=" + tags).then((response) => {
