@@ -22,8 +22,8 @@ app.get("/aa", (req, res) => {
   res.sendFile(path.join(__dirname, "/aa.html"));
 })
 
-app.get("/smg", (req, res) => {
-  //res.status(200).send("This game is currently down for the following reason: Kurt is stupid");
+app.get("/sunday", (req, res) => {
+  //res.status(200).send("This game is currently down");
   res.sendFile(path.join(__dirname, "/smg.html"));
 })
 
