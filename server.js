@@ -337,7 +337,7 @@ client.on("message", async message => {
       }
     }
     tags = tags.join(" ").toLowerCase().trim()
-    if (message.guild.id == "736511371264655392" && message.channel.id != "764638537035022336") {
+    if ((message.guild.id == "736511371264655392" || message.guild.id == "904856325895376936") && message.channel.id != "764638537035022336") {
       tags += " rating:safe"
     }
     got("https://e621.net/posts?tags=" + tags).then((response) => {
