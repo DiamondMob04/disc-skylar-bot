@@ -340,7 +340,10 @@ client.on("message", async message => {
     if ((message.guild.id == "736511371264655392" || message.guild.id == "904856325895376936") && message.channel.id != "764638537035022336") {
       tags += " rating:safe"
     }
-    got("https://e621.net/posts?tags=" + tags).then((response) => {
+    let headers = {
+      headers: { 'User-Agent': 'Mozilla/5.0' }
+    };
+    got("https://e621.net/posts?tags=" + tags, { headers }).then((response) => {
       let $ = cheerio.load(response.body);
       if ($(".has-cropped-true").length + $(".has-cropped-false").length === 0) {
         return message.reply("We couldn't find any results for those tags! Maybe try something else?")
