@@ -18,14 +18,14 @@ app.get("/", (req, res) => {
   res.sendStatus(200);
 });
 
-app.get("/aa", (req, res) => {
-  res.sendFile(path.join(__dirname, "/aa.html"));
-})
+// app.get("/aa", (req, res) => {
+//   res.sendFile(path.join(__dirname, "/aa.html"));
+// })
 
-app.get("/sunday", (req, res) => {
-  //res.status(200).send("This game is currently down");
-  res.sendFile(path.join(__dirname, "/smg.html"));
-})
+// app.get("/sunday", (req, res) => {
+//   //res.status(200).send("This game is currently down");
+//   res.sendFile(path.join(__dirname, "/smg.html"));
+// })
 
 app.use(express.static(__dirname));
 
